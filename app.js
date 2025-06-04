@@ -11,7 +11,7 @@ app.use(express.json()); // Middleware to parse JSON bodies
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 console.log('Attempting to read OPENAI_API_KEY. Value:', OPENAI_API_KEY ? 'Key Found (masked for security)' : 'Key NOT Found');
 
-// Simple root route to confirm server is up
+// Simple root route to confirm that the server is up
 app.get('/', (req, res) => {
   res.send('Chatbot backend is running!');
 });
