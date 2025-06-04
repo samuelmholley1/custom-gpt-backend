@@ -6,8 +6,11 @@
   "author": "alphasec",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2"
-  },
+  "express": "^4.19.2", // Keep existing express version or update to latest stable
+  "axios": "^1.7.2",    // Add this line - use current stable version
+  "cors": "^2.8.5",     // Add this line - use current stable version
+  "dotenv": "^16.4.5"   // Add this line - use current stable version
+},
   "scripts": {
     "start": "node app.js"
   }
