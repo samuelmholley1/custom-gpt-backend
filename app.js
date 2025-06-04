@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY);
 
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
