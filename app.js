@@ -18,9 +18,10 @@ app.get('/', (req, res) => {
   res.send('Chatbot backend is running!');
 });
 
-// Route to serve the conversational script
+// Route to serve the conversational script as JSON
 app.get('/conversational_script.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'conversational_script.js'));
+  const script = require('./conversational_script.js');
+  res.json(script);
 });
 
 app.post('/chat', async (req, res) => {
