@@ -13,11 +13,6 @@ app.use(express.static(path.join(__dirname, 'public'))); // Serve static files f
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 console.log('Attempting to read OPENAI_API_KEY. Value:', OPENAI_API_KEY ? 'Key Found (masked for security)' : 'Key NOT Found');
 
-// Simple root route to confirm that the server is up
-app.get('/', (req, res) => {
-  res.send('Chatbot backend is running!');
-});
-
 // Route to serve the conversational script as JSON
 app.get('/conversational_script.js', (req, res) => {
   const script = require('./conversational_script.js');
