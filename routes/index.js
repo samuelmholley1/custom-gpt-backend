@@ -1,9 +1,10 @@
 const express = require('express');
-const path = require('path');
 const router = express.Router();
+const path = require('path');
 
-// Serve the index.html file for the root route
-router.get('/', (req, res) => {
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  // Serve the static HTML file instead of trying to render a view
   res.sendFile(path.join(__dirname, '../views/index.html'));
 });
 
