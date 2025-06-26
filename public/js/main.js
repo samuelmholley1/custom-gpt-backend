@@ -6,27 +6,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
 
     let conversationState = 'greeting';
-    let conversationalScript = {}; // Will be loaded from the server
+    let conversationalScript = null; // Initialize as null to indicate not loaded
+
+    // Hide the chat bubble initially until the script is loaded and ready
+    chatBubble.style.display = 'none';
 
     // Fetch the conversational script from the server
     fetch('/conversational_script.js')
-        .then(response => response.json())
-        .then(data => {
-            conversationalScript = data;
-            // Add a small delay to ensure the chat window is visible before the first message appears
-            if (chatWindow.style.display === 'flex') {
-                setTimeout(() => displayMessage(conversationState), 100);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            return response.json();
         })
-        .catch(error => console.error('Error loading conversational script:', error));
+        .then(data => {
+            console.log("Conversational script loaded successfully.");
+            conversationalScript = data;
+            // Show the chat bubble now that the script is ready
+            chatBubble.style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Fatal Error: Could not load conversational script:', error);
+        });
 
     chatBubble.addEventListener('click', () => {
+        // Add an explicit check for the script to be safe.
+        if (!conversationalScript) {
+            console.error("Chat opened, but conversational script is not loaded.");
+            return;
+        }
         chatWindow.style.display = 'flex';
         chatBubble.style.display = 'none';
-        // Ensure the script is loaded before displaying the first message
-        if (Object.keys(conversationalScript).length > 0) {
-            displayMessage(conversationState);
-        }    
+        displayMessage(conversationState);
     });
 
     closeChat.addEventListener('click', () => {
@@ -36,8 +47,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function displayMessage(state) {
+        if (!conversationalScript) {
+            console.error("displayMessage called, but script is not loaded.");
+            return;
+        }
         const node = conversationalScript[state];
-        if (!node) return;
+        if (!node) {
+            console.error(`State "${state}" not found in conversational script.`);
+            return;
+        }
 
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', 'bot');
@@ -54,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const button = document.createElement('button');
                 button.innerText = option.text;
                 button.addEventListener('click', () => {
+                    if (!conversationalScript) return;
                     addUserMessage(option.text);
                     conversationState = option.next;
                     displayMessage(conversationState);
