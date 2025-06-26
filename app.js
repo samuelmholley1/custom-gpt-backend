@@ -1,12 +1,14 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors'); // For Cross-Origin Resource Sharing
+const path = require('path'); // To serve static files
 require('dotenv').config(); // To load environment variables from .env file locally
 
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the 'public' directory
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 console.log('Attempting to read OPENAI_API_KEY. Value:', OPENAI_API_KEY ? 'Key Found (masked for security)' : 'Key NOT Found');
@@ -14,6 +16,11 @@ console.log('Attempting to read OPENAI_API_KEY. Value:', OPENAI_API_KEY ? 'Key F
 // Simple root route to confirm that the server is up
 app.get('/', (req, res) => {
   res.send('Chatbot backend is running!');
+});
+
+// Route to serve the conversational script
+app.get('/conversational_script.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'conversational_script.js'));
 });
 
 app.post('/chat', async (req, res) => {
