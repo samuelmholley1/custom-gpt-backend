@@ -6,36 +6,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
 
     let conversationState = 'greeting';
+    let conversationalScript = {}; // Will be loaded from the server
 
-    const conversationalScript = {
-        greeting: {
-            message: "Welcome to Reclaim by Design. I'm an AI assistant that can help you book a free strategy session with Samuel. Would you like to get started?",
-            options: [
-                { text: "Yes, Let's Do It", next: "interest" },
-                { text: "No, Thanks", next: "goodbye" }
-            ]
-        },
-        interest: {
-            message: "Great. To make sure we make the most of your time, are you interested in consulting for yourself as an individual, or for your team?",
-            options: [
-                { text: "Just for Me", next: "calendly" },
-                { text: "For My Team", next: "calendly" }
-            ]
-        },
-        calendly: {
-            message: "Perfect. Please use the following link to find a time that works for you. After you book, you'll be directed to a brief assessment to prepare for our call.",
-            action: "https://calendly.com/your-link" // Replace with the actual Calendly link
-        },
-        goodbye: {
-            message: "No problem at all. If you change your mind, just click on me again. Have a great day!",
-            action: "close"
-        }
-    };
+    // Fetch the conversational script from the server
+    fetch('/conversational_script.js')
+        .then(response => response.json())
+        .then(data => {
+            conversationalScript = data;
+            // Add a small delay to ensure the chat window is visible before the first message appears
+            if (chatWindow.style.display === 'flex') {
+                setTimeout(() => displayMessage(conversationState), 100);
+            }
+        })
+        .catch(error => console.error('Error loading conversational script:', error));
 
     chatBubble.addEventListener('click', () => {
         chatWindow.style.display = 'flex';
         chatBubble.style.display = 'none';
-        displayMessage(conversationState);
+        // Ensure the script is loaded before displaying the first message
+        if (Object.keys(conversationalScript).length > 0) {
+            displayMessage(conversationState);
+        }    
     });
 
     closeChat.addEventListener('click', () => {
