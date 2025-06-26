@@ -4,8 +4,8 @@ const path = require('path');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  // Serve the static HTML file instead of trying to render a view
-  res.sendFile(path.join(__dirname, '../views/index.html'));
+  // Use absolute path from project root for Vercel compatibility
+  res.sendFile(path.join(process.cwd(), 'views/index.html'));
 });
 
 module.exports = router;
