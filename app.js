@@ -4,6 +4,8 @@ const cors = require('cors'); // For Cross-Origin Resource Sharing
 const path = require('path'); // To serve static files
 require('dotenv').config(); // To load environment variables from .env file locally
 
+const indexRouter = require('./routes/index');
+
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
@@ -14,6 +16,13 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 console.log('Attempting to read OPENAI_API_KEY. Value:', OPENAI_API_KEY ? 'Key Found (masked for security)' : 'Key NOT Found');
 
 // Route to serve the conversational script as JSON
+app.get('/conversational_script.js', (req, res) => {
+  const script = require('./conversational_script.js');
+  res.json(script);
+});
+
+// Use the index router for the root path
+app.use('/', indexRouter);
 app.get('/conversational_script.js', (req, res) => {
   const script = require('./conversational_script.js');
   res.json(script);
